@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import NotesList from './components/NotesList';
 import Search from './components/Search';
 import Header from './components/Header';
+import EditNoteModal from './components/EditNoteModal'; 
+
 const App = () => {
   const [notes, setNotes] = useState([
     {
@@ -24,8 +26,9 @@ const App = () => {
   ]);
 
   const [searchText, setSearchText] = useState('');
-
   const [darkMode, setDarkMode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [currentNote, setCurrentNote] = useState(null);  
 
   useEffect(() => {
     const savedNotes = JSON.parse(
@@ -38,25 +41,37 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('react-notes-app-data', JSON.stringify(notes)
-    );
+    localStorage.setItem('react-notes-app-data', JSON.stringify(notes));
   }, [notes]);
 
   const addNote = (text) => {
     const date = new Date();
     const newNote = {
-      id: nanoid,
+      id: nanoid(),
       text: text,
       date: date.toLocaleDateString()
-    }
-    const newNotes = [...notes, newNote];
-    setNotes(newNotes);
+    };
+    setNotes([...notes, newNote]);
   };
 
   const deleteNote = (id) => {
     const newNotes = notes.filter((note) => note.id !== id);
     setNotes(newNotes);
-  }
+  };
+
+  // Open modal for editing note
+  const openEditModal = (note) => {
+    setCurrentNote(note); // Set the note to edit
+    setIsModalOpen(true); // Show modal
+  };
+
+  // Handle note update
+  const handleEditNote = (updatedText) => {
+    setNotes(notes.map((note) => 
+      note.id === currentNote.id ? { ...note, text: updatedText } : note
+    ));
+    setIsModalOpen(false); // Close modal after update
+  };
 
   return (
     <div className={`${darkMode && 'dark-mode'}`}>
@@ -69,7 +84,15 @@ const App = () => {
           )}
           handleAddNote={addNote}
           handleDeleteNote={deleteNote}
+          handleEditNote={openEditModal} // Pass edit function
         />
+        {isModalOpen && (
+          <EditNoteModal 
+            note={currentNote} 
+            handleEditNote={handleEditNote} 
+            handleClose={() => setIsModalOpen(false)} 
+          />
+        )}
       </div>
     </div>
   );

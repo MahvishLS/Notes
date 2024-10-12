@@ -7,7 +7,7 @@ const Search = ({ handleSearchNote }) => {
       <input onChange={(event)=>
         handleSearchNote(event.target.value)
       }
-        type="text" placeholder="Type to search"></input>
+        type="text" placeholder="Type to search" className='search-bar'></input>
      </div>
      );
 };

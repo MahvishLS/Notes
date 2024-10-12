@@ -61,19 +61,23 @@ textarea:focus {
 }
 
 .save {
-  background-color: #e1e1e1;
+  padding: 10px 20px;
+  font-size: 16px;
   border: none;
-  border-radius: 15px;
-  padding: 15px 25px;
-}
-
-.save:hover {
-  background-color: #ededed;
+  border-radius: 5px;
   cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #555;
+  color: white;
 }
 
-.note{
-  background-color: #f2c6de;
+.save:hover{
+  background-color: #333;
+}
+
+.note {
+  background-color: #f2c6de; 
   border-radius: 10px;
   padding: 1rem;
   min-height: 170px;
@@ -81,6 +85,11 @@ textarea:focus {
   flex-direction: column;
   justify-content: space-between;
   white-space: pre-wrap;
+  transition: box-shadow 0.3s ease; 
+}
+
+.note:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .note-footer {
@@ -88,6 +97,12 @@ textarea:focus {
   align-items: center;
   justify-content: space-between;
 }
+
+.edit-icon {
+  cursor: pointer;
+  padding: 0 10px;
+}
+
 
 .delete-icon {
   cursor: pointer;
@@ -108,4 +123,8 @@ textarea:focus {
 
 .search input:focus {
   outline: none;
+}
+
+.search-bar{
+  width: 100%;
 }
