@@ -1,35 +1,49 @@
 import React from 'react';
 import { useState } from 'react';
+
 const AddNote = ({ handleAddNote }) => {
-  const [noteText, setNoteText] = useState('');
+  const [title, settitle] = useState(''); 
+  const [text, settext] = useState('');
   const characterLimit = 200;
 
   const handleChange = (event) => {
-    if(characterLimit - event.target.value.length >=0){
-    setNoteText(event.target.value);
+    if (characterLimit - event.target.value.length >= 0) {
+      settext(event.target.value);
     }
   };
 
   const handleSaveClick = () => {
-    if(noteText.trim().length > 0){
-        handleAddNote(noteText)
-        setNoteText('');
+    const finalTitle = title.trim().length > 0 ? title : "Untitled"; // Use "Untitled" if title is empty
+    if (text.trim().length > 0) {
+      handleAddNote(finalTitle, text);
+      settext('');
+      settitle(''); 
     }
   };
+  
 
-  return(<div className="new">
-    <textarea 
-    rows="8" 
-    cols="130" 
-    placeholder="Type to add a note"
-    value={noteText}
-    onChange={handleChange}
-    ></textarea>
-    <div className="note-footer">
-      <small>{characterLimit - noteText.length} Remaining</small>
-      <button className="save" onClick={handleSaveClick}>Save</button>
+  return (
+    <div className="new">
+      <input 
+        type="text" 
+        placeholder="Title" 
+        value={title} 
+        onChange={(e) => settitle(e.target.value)} 
+      />
+      <hr />
+      <textarea 
+        rows="8" 
+        cols="130" 
+        placeholder="Type to add a note"
+        value={text}
+        onChange={handleChange}
+      ></textarea>
+      <div className="note-footer">
+        <small>{characterLimit - text.length} Remaining</small>
+        <button className="save" onClick={handleSaveClick}>Save</button>
+      </div>
     </div>
-  </div>
   );
 };
+
 export default AddNote;

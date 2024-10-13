@@ -50,6 +50,19 @@ code {
   
 }
 
+.new input{
+  border: none;
+  background-color: #c6def1;
+  font-size: 22px;
+  padding-top: 12px;
+  font-weight: 700;
+}
+
+.new input:focus{
+  outline: none;
+  background-color: #c6def1;
+}
+
 textarea {
   border: none;
   resize: none;
@@ -86,6 +99,11 @@ textarea:focus {
   justify-content: space-between;
   white-space: pre-wrap;
   transition: box-shadow 0.3s ease; 
+}
+
+.note-content h5{
+  font-size: 20px;
+  margin: 12px 0;
 }
 
 .note:hover {

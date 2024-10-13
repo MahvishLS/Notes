@@ -10,16 +10,19 @@ const App = () => {
   const [notes, setNotes] = useState([
     {
       id: nanoid(),
+      title: "Note 1",
       text: "This is my first note!",
       date: "05/10/2024"
     },
     {
       id: nanoid(),
+      title: "Note 2",
       text: "This is my second note!",
       date: "01/10/2024"
     },
     {
       id: nanoid(),
+      title: "Note 3",
       text: "This is my third note!",
       date: "29/09/2024"
     },
@@ -44,10 +47,11 @@ const App = () => {
     localStorage.setItem('react-notes-app-data', JSON.stringify(notes));
   }, [notes]);
 
-  const addNote = (text) => {
+  const addNote = (title, text) => { 
     const date = new Date();
     const newNote = {
       id: nanoid(),
+      title: title, 
       text: text,
       date: date.toLocaleDateString()
     };
@@ -59,18 +63,16 @@ const App = () => {
     setNotes(newNotes);
   };
 
-  // Open modal for editing note
   const openEditModal = (note) => {
-    setCurrentNote(note); // Set the note to edit
-    setIsModalOpen(true); // Show modal
+    setCurrentNote(note);
+    setIsModalOpen(true);
   };
 
-  // Handle note update
-  const handleEditNote = (updatedText) => {
+  const handleEditNote = (updatedNote) => { 
     setNotes(notes.map((note) => 
-      note.id === currentNote.id ? { ...note, text: updatedText } : note
+      note.id === currentNote.id ? { ...note, ...updatedNote } : note 
     ));
-    setIsModalOpen(false); // Close modal after update
+    setIsModalOpen(false);
   };
 
   return (
@@ -80,11 +82,12 @@ const App = () => {
         <Search handleSearchNote={setSearchText} />
         <NotesList
           notes={notes.filter((note) =>
-            note.text.toLowerCase().includes(searchText)
+            (note.text?.toLowerCase().includes(searchText.toLowerCase()) || 
+            note.title?.toLowerCase().includes(searchText.toLowerCase()))
           )}
           handleAddNote={addNote}
           handleDeleteNote={deleteNote}
-          handleEditNote={openEditModal} // Pass edit function
+          handleEditNote={openEditModal} 
         />
         {isModalOpen && (
           <EditNoteModal 
