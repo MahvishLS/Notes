@@ -1,6 +1,6 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import NotesList from './components/NotesList';
 import Search from './components/Search';
 import Header from './components/Header';
@@ -32,20 +32,6 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [currentNote, setCurrentNote] = useState(null);  
-
-  useEffect(() => {
-    const savedNotes = JSON.parse(
-      localStorage.getItem('react-notes-app-data')
-    );
-
-    if (savedNotes) {
-      setNotes(savedNotes);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('react-notes-app-data', JSON.stringify(notes));
-  }, [notes]);
 
   const addNote = (title, text) => { 
     const date = new Date();
@@ -82,8 +68,8 @@ const App = () => {
         <Search handleSearchNote={setSearchText} />
         <NotesList
           notes={notes.filter((note) =>
-            (note.text?.toLowerCase().includes(searchText.toLowerCase()) || 
-            note.title?.toLowerCase().includes(searchText.toLowerCase()))
+            (note.text.toLowerCase().includes(searchText.toLowerCase()) || 
+            note.title.toLowerCase().includes(searchText.toLowerCase()))
           )}
           handleAddNote={addNote}
           handleDeleteNote={deleteNote}

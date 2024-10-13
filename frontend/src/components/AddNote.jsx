@@ -13,7 +13,7 @@ const AddNote = ({ handleAddNote }) => {
   };
 
   const handleSaveClick = () => {
-    const finalTitle = title.trim().length > 0 ? title : "Untitled"; // Use "Untitled" if title is empty
+    const finalTitle = title.trim().length > 0 ? title : "Untitled"; 
     if (text.trim().length > 0) {
       handleAddNote(finalTitle, text);
       settext('');
