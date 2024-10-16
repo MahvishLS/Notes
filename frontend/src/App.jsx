@@ -1,52 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
 import NotesList from './components/NotesList';
 import Search from './components/Search';
 import Header from './components/Header';
 import EditNoteModal from './components/EditNoteModal'; 
+import axios from 'axios';
 
 const App = () => {
-  const [notes, setNotes] = useState([
-    {
-      id: nanoid(),
-      title: "Note 1",
-      text: "This is my first note!",
-      date: "05/10/2024"
-    },
-    {
-      id: nanoid(),
-      title: "Note 2",
-      text: "This is my second note!",
-      date: "01/10/2024"
-    },
-    {
-      id: nanoid(),
-      title: "Note 3",
-      text: "This is my third note!",
-      date: "29/09/2024"
-    },
-  ]);
-
+  const [notes, setNotes] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [darkMode, setDarkMode] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [currentNote, setCurrentNote] = useState(null);  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null);
 
-  const addNote = (title, text) => { 
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/notes');
+        const fetchedNotes = response.data.map(note => ({
+          id: note._id,  
+          title: note.title,
+          text: note.content,  
+          date: new Date(note.createdAt).toLocaleDateString()
+        }));
+        setNotes(fetchedNotes);
+      } catch (error) {
+        console.error('Error fetching notes:', error);
+      }
+    };
+
+    fetchNotes();
+  }, []);
+
+  const addNote = async (title, text) => {
     const date = new Date();
     const newNote = {
-      id: nanoid(),
-      title: title, 
-      text: text,
-      date: date.toLocaleDateString()
+      title,
+      content: text,
     };
-    setNotes([...notes, newNote]);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/notes', newNote);
+      const savedNote = {
+        id: response.data._id,
+        title: response.data.title,
+        text: response.data.content,
+        date: date.toLocaleDateString(),
+      };
+      setNotes([...notes, savedNote]);
+    } catch (error) {
+      console.error('Error adding note:', error);
+    }
   };
 
-  const deleteNote = (id) => {
-    const newNotes = notes.filter((note) => note.id !== id);
-    setNotes(newNotes);
+  const deleteNote = async (id) => {
+    try {
+      console.log(id);
+      await axios.delete(`http://localhost:5000/api/notes/${id}`);
+      const newNotes = notes.filter((note) => note.id !== id);
+      setNotes(newNotes);
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   const openEditModal = (note) => {
