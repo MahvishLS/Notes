@@ -4,7 +4,7 @@ import { useState } from 'react';
 const AddNote = ({ handleAddNote }) => {
   const [title, settitle] = useState(''); 
   const [text, settext] = useState('');
-  const characterLimit = 200;
+  const characterLimit = 500;
 
   const handleChange = (event) => {
     if (characterLimit - event.target.value.length >= 0) {

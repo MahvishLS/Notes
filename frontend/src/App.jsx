@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import NotesList from './components/NotesList';
 import Search from './components/Search';
 import Header from './components/Header';
-import EditNoteModal from './components/EditNoteModal'; 
+import EditNoteModal from './components/EditNoteModal';
 import axios from 'axios';
 
 const App = () => {
@@ -18,9 +18,9 @@ const App = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/notes');
         const fetchedNotes = response.data.map(note => ({
-          id: note._id,  
+          id: note._id,
           title: note.title,
-          text: note.content,  
+          text: note.content,
           date: new Date(note.createdAt).toLocaleDateString()
         }));
         setNotes(fetchedNotes);
@@ -69,32 +69,37 @@ const App = () => {
     setIsModalOpen(true);
   };
 
-  const handleEditNote = (updatedNote) => { 
-    setNotes(notes.map((note) => 
-      note.id === currentNote.id ? { ...note, ...updatedNote } : note 
-    ));
-    setIsModalOpen(false);
+  const handleEditNote = async (updatedNote) => {
+    try {
+      await axios.put(`http://localhost:5000/api/notes/${currentNote.id}`, updatedNote);
+      setNotes(notes.map((note) =>
+        note.id === currentNote.id ? { ...note, ...updatedNote } : note
+      ));
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error updating note:', error);
+    }
   };
 
   return (
     <div className={`${darkMode && 'dark-mode'}`}>
       <div className="container">
-        <Header handleToggleDarkMode={setDarkMode} />
+        <Header handleToggleDarkMode={setDarkMode} darkMode={darkMode} />
         <Search handleSearchNote={setSearchText} />
         <NotesList
           notes={notes.filter((note) =>
-            (note.text.toLowerCase().includes(searchText.toLowerCase()) || 
+          (note.text.toLowerCase().includes(searchText.toLowerCase()) ||
             note.title.toLowerCase().includes(searchText.toLowerCase()))
           )}
           handleAddNote={addNote}
           handleDeleteNote={deleteNote}
-          handleEditNote={openEditModal} 
+          handleEditNote={openEditModal}
         />
         {isModalOpen && (
-          <EditNoteModal 
-            note={currentNote} 
-            handleEditNote={handleEditNote} 
-            handleClose={() => setIsModalOpen(false)} 
+          <EditNoteModal
+            note={currentNote}
+            handleEditNote={handleEditNote}
+            handleClose={() => setIsModalOpen(false)}
           />
         )}
       </div>
